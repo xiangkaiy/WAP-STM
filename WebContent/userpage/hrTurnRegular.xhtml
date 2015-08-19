@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/hrMain.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+
+					<p:dataTable id="applyFromLeader" widgetVar="applyTable"
+						selection="#{hrApplyRegularController.selectedApply}"
+						filteredValue="#{hrApplyRegularController.filteredApply}"
+						selectionMode="single" emptyMessage="There is no records!"
+						value="#{hrApplyRegularController.applyList}" var="item"
+						rowKey="#{item.applyRegular.id}" rows="10" paginator="true"
+						paginatorAlwaysVisible="true" paginatorPosition="bottom"
+						first="#{hrApplyRegularController.first}"
+						paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}">
+						<p:ajax event="rowSelect"
+							listener="#{hrApplyRegularController.onRowSelect}"
+							update=":form:applyFromLeader" />
+
+						<p:column styleClass="column-text" sortBy="#{item.ste.username}"
+							filterMatchMode="contains" filterBy="#{item.ste.username}">
+							<f:facet name="header">
+								<h:outputText value="User Name" />
+							</f:facet>
+							<h:outputText value="#{item.ste.username}" />
+						</p:column>
+
+						<p:column styleClass="column-text"
+							sortBy="#{item.applyRegular.applytime}">
+							<f:facet name="header">
+								<h:outputText value="ApplyTime" />
+							</f:facet>
+							<h:outputText value="#{item.applyRegular.applytime}" />
+						</p:column>
+
+						<p:column styleClass="column-text"
+							sortBy="#{item.applyRegular.intro}"
+							filterBy="#{item.applyRegular.intro}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Content" />
+							</f:facet>
+							<h:outputText escape="false" value="#{item.applyRegular.intro}" />
+						</p:column>
+
+						<p:column styleClass="column-text"
+							sortBy="#{item.ste.departmentName}"
+							filterBy="#{item.ste.departmentName}">
+							<f:facet name="header">
+								<h:outputText value="Department" />
+							</f:facet>
+							<f:facet name="filter">
+								<p:selectOneMenu onchange="PF('applyTable').filter()">
+									<f:selectItem itemLabel="Choose One" itemValue="#{null}"
+										noSelectionOption="true" />
+									<f:selectItems
+										value="#{hrApplyRegularController.departmentList}"
+										var="depart" itemLabel="#{depart.name}"
+										itemValue="#{depart.name}" />
+								</p:selectOneMenu>
+							</f:facet>
+							<h:outputText value="#{item.ste.departmentName}" />
+						</p:column>
+
+						<p:column styleClass="column-text" sortBy="#{item.totalScore}">
+							<f:facet name="header">
+								<h:outputText value="Score:" />
+								<p:outputLabel id="displayRange"
+									value="Between #{hrApplyRegularController.minScore} and #{hrApplyRegularController.maxScore}" />
+								<p:slider for="minid,maxid" display="displayRange" range="true"
+									minValue="0"
+									maxValue="#{hrApplyRegularController.maxScoreRange}"
+									displayTemplate="Between {min} and {max}">
+									<p:ajax event="slideEnd" process="@form"
+										update=":form:applyFromLeader"
+										listener="#{hrApplyRegularController.onSlideEnd}" />
+								</p:slider>
+								<p:inputText type="hidden" id="minid"
+									value="#{hrApplyRegularController.minScore}" />
+								<p:inputText type="hidden" id="maxid"
+									value="#{hrApplyRegularController.maxScore}" />
+							</f:facet>
+
+							<h:outputText value="#{item.totalScore}" />
+
+						</p:column>
+
+						<p:column styleClass="column-text"
+							sortBy="#{item.applyRegular.status}">
+							<f:facet name="header">
+								<h:outputText value="Status" />
+							</f:facet>
+							<h:outputText value="#{item.applyRegular.status}" />
+						</p:column>
+					</p:dataTable>
+
+				<p:spacer height="10" />
+				<p:separator />
+				<p:panel id="stelist">
+					<p:panel header="Train Performance" toggleable="true">
+						<p:dataTable id="trainDataTable"
+							value="#{hrApplyRegularController.trainList}" var="train">
+							<p:column styleClass="column-text" sortBy="#{train.trainName}">
+								<f:facet name="header">
+									<h:outputText value="Train name" />
+								</f:facet>
+								<h:outputText value="#{train.trainName}" />
+							</p:column>
+
+							<p:column styleClass="column-text" sortBy="#{train.finishtime}">
+								<f:facet name="header">
+									<h:outputText value="Finish Time" />
+								</f:facet>
+								<h:outputText value="#{train.finishtime}" />
+							</p:column>
+
+							<p:column styleClass="column-text" sortBy="#{train.score}">
+								<f:facet name="header">
+									<h:outputText value="Score" />
+								</f:facet>
+								<h:outputText value="#{train.score}" />
+							</p:column>
+
+							<p:column styleClass="column-text" sortBy="#{train.status}">
+								<f:facet name="header">
+									<h:outputText value="Status" />
+								</f:facet>
+								<h:outputText value="#{train.status}" />
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+
+					<p:panel header="Other Performance" toggleable="true">
+						<p:panelGrid>
+							<p:row>
+								<p:column>
+									<div id="worktimeChart" class="barChart"></div>
+								</p:column>
+								<p:column>
+									<div id="chart" class="barChart"></div>
+								</p:column>
+							</p:row>
+
+						</p:panelGrid>
+					</p:panel>
+
+					<p:panel header="Total Score" toggleable="true">
+						<p:panelGrid>
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Train Score" style="display:inline" />
+									<p:outputLabel value="(sum of every train score):"
+										styleClass="brokeLabel" />
+								</p:column>
+								<p:column>
+									<p:outputLabel
+										value="#{hrApplyRegularController.curTrainScore}" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>
+									<p:outputLabel value="WorkTime Score" />
+									<p:outputLabel value="(100*OnScheduleRatio+OnScheduleCount):"
+										styleClass="brokeLabel" />
+								</p:column>
+								<p:column>
+									<p:outputLabel
+										value="#{hrApplyRegularController.curWorkTimeScore}" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Evaluation Score" />
+									<p:outputLabel value="(sum of every evaluation):"
+										styleClass="brokeLabel" />
+								</p:column>
+								<p:column>
+									<p:outputLabel
+										value="#{hrApplyRegularController.curEvaluationScore}" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Total Score:" />
+								</p:column>
+								<p:column>
+									<p:outputLabel
+										value="#{hrApplyRegularController.curTotalScore}" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Reference Score:" />
+								</p:column>
+								<p:column>
+									<p:outputLabel
+										value="#{hrApplyRegularController.referenceScore}" />
+								</p:column>
+							</p:row>
+							<p:row colspan="2">
+								<p:column>
+									<p:commandButton id="passBtn" icon="ui-icon-tag" value="Pass"
+										ajax="true" update="form" immediate="true"
+										actionListener="#{hrApplyRegularController.passApplyTurn}" />
+
+									<p:commandButton id="refuseBtn" icon="ui-icon-tag"
+										value="Refuse" ajax="true" update="form" immediate="true"
+										actionListener="#{hrApplyRegularController.refuseApplyTurn}" />
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+					</p:panel>
+					<p:messages id="tip" />
+
+					<p:inputText type="hidden" id="workEfficiency"
+						value="#{hrApplyRegularController.workEfficiency}" />
+					<p:inputText type="hidden" id="studyAbility"
+						value="#{hrApplyRegularController.studyAbility}" />
+					<p:inputText type="hidden" id="meetingParticipate"
+						value="#{hrApplyRegularController.meetingParticipate}" />
+					<p:inputText type="hidden" id="teamWork"
+						value="#{hrApplyRegularController.teamWork}" />
+					<p:inputText type="hidden" id="lateCount"
+						value="#{hrApplyRegularController.lateCount}" />
+					<p:inputText type="hidden" id="leaveEarlyCount"
+						value="#{hrApplyRegularController.leaveEarlyCount}" />
+					<p:inputText type="hidden" id="onScheduleCount"
+						value="#{hrApplyRegularController.onScheduleCount}" />
+				</p:panel>
+
+				<p:ajaxStatus onstart="PF('statusDialog').show()"
+					onsuccess="PF('statusDialog').hide()" />
+
+				<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+					closable="false" resizable="false" showHeader="false">
+					<p:graphicImage value="/resources/images/ajax-loader.gif" />
+				</p:dialog>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

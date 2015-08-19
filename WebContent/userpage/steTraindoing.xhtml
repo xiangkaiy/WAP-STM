@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<h:body>
+	<ui:composition template="/template/steMain.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+
+				<p:dataTable id="selectedTrainsTable" var="c"
+					selection="#{steTrainController.selectedDoingTrain}"
+					selectionMode="single"
+					value="#{steTrainController.unfinishedTrain}" rowKey="#{c.id}"
+					emptyMessage="No records!"
+					rendered="#{not empty steTrainController.unfinishedTrain}">
+					<p:ajax event="rowSelect"
+						listener="#{steTrainController.onRowSelect}" update=":form" />
+
+					<f:facet name="header">
+						Unfinished Trains
+					</f:facet>
+
+					<p:column headerText="Name" styleClass="column-text">
+						<h:outputText value="#{c.name}" />
+					</p:column>
+
+					<p:column headerText="Start Time" styleClass="column-text">
+						<h:outputText value="#{c.starttime}" />
+					</p:column>
+
+					<p:column headerText="End Time" styleClass="column-text">
+						<h:outputText value="#{c.endtime}" />
+					</p:column>
+
+					<p:column headerText="Required" styleClass="column-text">
+						<h:outputText value="#{c.required}" />
+					</p:column>
+
+					<p:column headerText="Status" styleClass="column-text">
+						<h:outputText value="#{c.status}" />
+					</p:column>
+
+					<f:facet name="footer">
+						In total there are #{fn:length(steTrainController.unfinishedTrain)} unfinished trains.
+					</f:facet>
+
+				</p:dataTable>
+
+				<p:separator />
+
+				<p:dataTable id="finishedTrain" var="c"
+					selection="#{steTrainController.selectedDoingTrain}"
+					selectionMode="single" value="#{steTrainController.finishedTrain}"
+					rowKey="#{c.id}" emptyMessage="No records!"
+					rendered="#{not empty steTrainController.finishedTrain}">
+					<p:ajax event="rowSelect"
+						listener="#{steTrainController.onRowSelect}" update=":form" />
+
+					<f:facet name="header">
+						Finished Trains
+					</f:facet>
+
+					<p:column headerText="Name" styleClass="column-text">
+						<h:outputText value="#{c.name}" />
+					</p:column>
+
+					<p:column headerText="Start Time" styleClass="column-text">
+						<h:outputText value="#{c.starttime}" />
+					</p:column>
+
+					<p:column headerText="End Time" styleClass="column-text">
+						<h:outputText value="#{c.endtime}" />
+					</p:column>
+
+					<p:column headerText="Required" styleClass="column-text">
+						<h:outputText value="#{c.required}" />
+					</p:column>
+
+					<p:column headerText="Status" styleClass="column-text">
+						<h:outputText value="#{c.status}" />
+					</p:column>
+
+					<p:column headerText="Score" styleClass="column-text">
+						<h:outputText value="#{c.score}" />
+					</p:column>
+
+					<f:facet name="footer">
+						In total there are #{fn:length(steTrainController.finishedTrain)} finished trains.
+					</f:facet>
+
+				</p:dataTable>
+
+				<p:spacer height="10" />
+				<p:separator />
+				<p:messages for="tip" />
+
+				<p:panel toggleable="true" toggleSpeed="500"
+					header="Train Doing: #{steTrainController.selectedDoingTrain.name}">
+
+					<ui:repeat var="q" value="#{steTrainController.questionList}">
+						<p:panel header="#{q.questionIndex}.#{q.question}" footer="">
+							<p:panelGrid cellpadding="10">
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Question:" />
+									</p:column>
+									<p:column>
+										<p:outputLabel value="#{q.question}" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column colspan="2">
+										<p:selectManyCheckbox columns="1" layout="grid" id="basic"
+											value="#{q.answer}">
+											<f:selectItem itemLabel="A. #{q.option1}" itemValue="1" />
+											<br />
+											<f:selectItem itemLabel="B. #{q.option2}" itemValue="2" />
+											<f:selectItem itemLabel="C. #{q.option3}" itemValue="3" />
+											<f:selectItem itemLabel="D. #{q.option4}" itemValue="4" />
+										</p:selectManyCheckbox>
+									</p:column>
+								</p:row>
+							</p:panelGrid>
+						</p:panel>
+					</ui:repeat>
+
+					<p:commandButton value="Submit Answer" ajax="true" update=":form"
+						actionListener="#{steTrainController.submitPaperAnswer}"
+						rendered="#{steTrainController.selectedDoingTrain.status == 'unfinish'}" />
+
+					<p:panelGrid columns="2"
+						rendered="#{steTrainController.selectedDoingTrain.status == 'pass' or steTrainController.selectedDoingTrain.status == 'fail'}">
+						<p:outputLabel value="Score of this train is(Total score is 100):" />
+						<p:outputLabel value="#{steTrainController.selectTrainScore}" />
+
+						<p:outputLabel value="Correct Answers of this train are:" />
+						<p:outputLabel value="#{steTrainController.correctAnswers}" />
+
+						<p:outputLabel value="Final train result is:" />
+						<p:outputLabel value="#{steTrainController.trainResult}"
+							style="color:red" />
+
+					</p:panelGrid>
+
+					<p:ajaxStatus onstart="PF('statusDialog').show()"
+						onsuccess="PF('statusDialog').hide()" />
+
+					<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+						closable="false" resizable="false" showHeader="false">
+						<p:graphicImage value="/resources/images/ajax-loader.gif" />
+					</p:dialog>
+				</p:panel>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

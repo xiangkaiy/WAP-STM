@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/adminMain.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+
+				<p:panel header="Set Reference Score" toggleable="true"
+					toggleSpeed="500">
+					<p:panelGrid cellpadding="5">
+						<p:row>
+							<p:column>
+								<p:outputLabel>Reference Score:</p:outputLabel>
+							</p:column>
+							<p:column>
+								<p:inputText required="true"
+									requiredMessage="Reference Score can't be empty"
+									value="#{hrWorkTimeManageController.referenceScore}"
+									validatorMessage="The Reference Score should be double beteween 0.0 and 10000.0!">
+									<f:validateDoubleRange minimum="0.0" maximum="10000.0" />
+								</p:inputText>
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:panel>
+				<p:panel header="Set New Work Time" toggleable="true"
+					toggleSpeed="500">
+					<p:panelGrid cellpadding="5">
+						<p:row>
+							<p:column>
+								<p:outputLabel>Work Start Time</p:outputLabel>
+							</p:column>
+							<p:column>
+								<p:calendar id="starttime"
+									timeZone="#{hrWorkTimeManageController.timeZone}"
+									value="#{hrWorkTimeManageController.startTime}"
+									pattern="HH:mm a" timeOnly="true" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel>Work End Time</p:outputLabel>
+							</p:column>
+							<p:column>
+								<p:calendar id="endtime"
+									timeZone="#{hrWorkTimeManageController.timeZone}"
+									value="#{hrWorkTimeManageController.endTime}" pattern="HH:mm a"
+									timeOnly="true" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel>Fine Unit($/times)</p:outputLabel>
+							</p:column>
+							<p:column>
+								<p:inputText required="true"
+									requiredMessage="Fine Unit can't be empty"
+									value="#{hrWorkTimeManageController.fineUnit.value}"
+									validatorMessage="The Fine Unit should be double beteween 0.0 and 100.0!">
+									<f:validateDoubleRange minimum="0.0" maximum="100.0" />
+								</p:inputText>
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+
+					<p:commandButton value="Submit" ajax="true" update=":form"
+						actionListener="#{hrWorkTimeManageController.modifyProperty}"
+						icon="ui-icon-check" />
+					<p:messages id="tip" />
+					<p:ajaxStatus onstart="PF('statusDialog').show()"
+						onsuccess="PF('statusDialog').hide()" />
+
+					<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+						closable="false" resizable="false" showHeader="false">
+						<p:graphicImage value="/resources/images/ajax-loader.gif" />
+					</p:dialog>
+
+				</p:panel>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

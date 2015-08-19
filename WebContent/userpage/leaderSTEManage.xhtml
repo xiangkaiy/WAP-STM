@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/leaderMain.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+				<p:panel header="All Short-term Employees">
+					<p:dataTable id="userTable" widgetVar="steTable"
+						emptyMessage="No employees found with given criteria"
+						filteredValue="#{leaderSTEManageController.filteredSTE}"
+						value="#{leaderSTEManageController.userList}" var="item"
+						selectionMode="single" rowKey="#{item.user.id}"
+						selection="#{leaderSTEManageController.selectedSTE}" rows="10">
+						<p:ajax event="rowSelect"
+							listener="#{leaderSTEManageController.onRowSelect}"
+							oncomplete="PF('detailDialog_w').show();" update="detailDialog" />
+						<f:facet name="header">
+							<p:outputPanel>
+								<h:outputText value="Search all fields:" />
+								<p:inputText id="globalFilter" onkeyup="PF('steTable').filter()"
+									style="width:150px" placeholder="Enter keyword" />
+							</p:outputPanel>
+						</f:facet>
+
+						<p:column filterBy="#{item.user.email}"
+							sortBy="#{item.user.email}" filterMatchMode="contains"
+							style="width:20%">
+							<f:facet name="header">
+								<h:outputText value="Email" />
+							</f:facet>
+							<h:outputText value="#{item.user.email}" />
+						</p:column>
+
+
+						<p:column filterBy="#{item.user.idno}" sortBy="#{item.user.idno}"
+							filterMatchMode="contains" style="width:20%">
+							<f:facet name="header">
+								<h:outputText value="ID Number" />
+							</f:facet>
+							<h:outputText value="#{item.user.idno}" />
+						</p:column>
+
+
+						<p:column filterBy="#{item.user.username}"
+							sortBy="#{item.user.username}" filterMatchMode="contains"
+							style="width:20%">
+							<f:facet name="header">
+								<h:outputText value="Username" />
+							</f:facet>
+							<h:outputText value="#{item.user.username}" />
+						</p:column>
+
+						<p:column filterBy="#{item.user.gender}"
+							sortBy="#{item.user.gender}" filterMatchMode="equals"
+							style="width:20%">
+							<f:facet name="header">
+								<h:outputText value="Gender" />
+							</f:facet>
+							<f:facet name="filter">
+								<p:selectOneMenu onchange="PF('steTable').filter()">
+									<f:selectItem itemLabel="Select One" itemValue="#{null}"
+										noSelectionOption="true" />
+									<f:selectItem itemLabel="Male" itemValue="male" />
+									<f:selectItem itemLabel="Female" itemValue="female" />
+								</p:selectOneMenu>
+							</f:facet>
+							<h:outputText value="#{item.user.gender}" />
+						</p:column>
+					</p:dataTable>
+					<p:messages id="tip" />
+				</p:panel>
+			</h:form>
+
+			<p:dialog id="detailDialog" widgetVar="detailDialog_w" modal="true"
+				visible="#{leaderSTEManageController.showEvaluationDlg}"
+				resizable="false" draggable="true" header="Give Evaluation">
+				<h:form>
+					<p:panelGrid columns="2">
+						<h:outputText value="Work Efficiency:" />
+						<p:rating value="#{leaderSTEManageController.workEfficiency}" />
+
+						<h:outputText value="Study Ability:" />
+						<p:rating value="#{leaderSTEManageController.studyAbility}" />
+
+						<h:outputText value="Meeting Participate:" />
+						<p:rating value="#{leaderSTEManageController.meetingParticipate}" />
+
+						<h:outputText value="Team Work:" />
+						<p:rating value="#{leaderSTEManageController.teamWork}" />
+
+						<h:outputText value="Comment:" />
+						<p:inputText value="#{leaderSTEManageController.evaluation.cmt}"
+							required="true" requiredMessage="Comment is required!" />
+					</p:panelGrid>
+					<p:commandButton id="submitEvaluation" value="Submit" ajax="true"
+						actionListener="#{leaderSTEManageController.submitEvaluation}"
+						update=":detailDialog :form" type="submit" />
+					<p:messages />
+
+				</h:form>
+			</p:dialog>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

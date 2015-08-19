@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/steMain.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+				<p:panel header="New Apply">
+					<p:editor id="editor" widgetVar="editorWidget"
+						value="#{steAskForRegularController.text}" width="600" />
+					<h:panelGrid columns="2" style="margin-top: 10px">
+						<p:commandButton value="Submit" update=":form" ajax="true"
+							actionListener="#{steAskForRegularController.applyForRegular}"
+							icon="ui-icon-disk" />
+
+						<p:commandButton value="Clear" type="button"
+							onclick="PF('editorWidget').clear();" icon="ui-icon-close" />
+					</h:panelGrid>
+				</p:panel>
+				<p:ajaxStatus onstart="PF('statusDialog').show()"
+					onsuccess="PF('statusDialog').hide()" />
+
+				<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+					closable="false" resizable="false" showHeader="false">
+					<p:graphicImage value="/resources/images/ajax-loader.gif" />
+				</p:dialog>
+				<p:messages id="tip" />
+				<p:separator />
+				<p:dataTable id="handledTable" var="leave"
+					value="#{steAskForRegularController.applyList}"
+					rowKey="#{leave.id}">
+
+					<p:column headerText="ApplyTime" styleClass="column-text">
+						<h:outputText value="#{leave.applytime}" />
+					</p:column>
+
+					<p:column headerText="Introduction" styleClass="column-text">
+						<h:outputText escape="false" value="#{leave.intro}" />
+					</p:column>
+
+					<p:column headerText="Status" styleClass="column-text">
+						<h:outputText value="#{leave.status}" />
+					</p:column>
+
+				</p:dataTable>
+
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

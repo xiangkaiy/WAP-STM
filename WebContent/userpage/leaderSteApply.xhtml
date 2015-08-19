@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/leaderMain.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+				<p:panel header="Apply for leave ">
+					<p:dataTable id="leaveTable" var="leave" widgetVar="leaveTableVar"
+						value="#{leaderSTEManageController.allApplyLeavesModel}"
+						selection="#{leaderSTEManageController.selectedApplyLeaves}"
+						rowKey="#{leave.id}" rows="10" paginator="true"
+						paginatorAlwaysVisible="true"
+						paginatorPosition="bottom"
+						first="#{leaderSTEManageController.first}"
+						paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}">
+						<p:column selectionMode="multiple"
+							styleClass="column-text-checkbox" />
+						<p:column styleClass="column-text" sortBy="#{leave.stename}">
+							<f:facet name="header">
+								<h:outputText value="User Name" />
+							</f:facet>
+							<h:outputText value="#{leave.stename}" />
+						</p:column>
+
+						<p:column styleClass="column-text" sortBy="#{leave.starttime}">
+							<f:facet name="header">
+								<h:outputText value="Start Time" />
+							</f:facet>
+							<h:outputText value="#{leave.starttime}" />
+						</p:column>
+
+						<p:column styleClass="column-text" sortBy="#{leave.endtime}">
+							<f:facet name="header">
+								<h:outputText value="End Time" />
+							</f:facet>
+							<h:outputText value="#{leave.endtime}" />
+						</p:column>
+
+						<p:column styleClass="column-text" sortBy="#{leave.reason}">
+							<f:facet name="header">
+								<h:outputText value="Reason" />
+							</f:facet>
+							<h:outputText value="#{leave.reason}" />
+						</p:column>
+
+						<p:column styleClass="column-text" sortBy="#{leave.applytime}">
+							<f:facet name="header">
+								<h:outputText value="ApplyTime" />
+							</f:facet>
+							<h:outputText value="#{leave.applytime}" />
+						</p:column>
+
+						<f:facet name="footer">
+							<p:outputLabel value="Comment:" />
+							<p:inputText value="#{leaderSTEManageController.comment}"
+								required="true" requiredMessage="The comment is required!" />
+
+							<p:commandButton icon="ui-icon-search"
+								value="Pass Selected Applys" update=":form"
+								actionListener="#{leaderSTEManageController.passLeaveApply}"
+								ajax="true" />
+
+							<p:commandButton icon="ui-icon-search"
+								value="Refuse Selected Applys" update=":form"
+								actionListener="#{leaderSTEManageController.refuseLeaveApply}"
+								ajax="true" />
+
+
+							<p:messages id="tip" />
+						</f:facet>
+					</p:dataTable>
+
+				</p:panel>
+
+				<p:ajaxStatus onstart="PF('statusDialog').show()"
+					onsuccess="PF('statusDialog').hide()" />
+
+				<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+					closable="false" resizable="false" showHeader="false">
+					<p:graphicImage value="/resources/images/ajax-loader.gif" />
+				</p:dialog>
+
+				<p:spacer height="10" />
+				<p:separator />
+
+				<p:panel header="Handled applys">
+					<p:dataTable id="handledTable" var="leave"
+						value="#{leaderSTEManageController.handledLeavesModel}"
+						emptyMessage="No applys found with given criteria" rows="10"
+						paginator="true" rowKey="#{leave.id}"
+						paginatorAlwaysVisible="true" paginatorPosition="bottom"
+						first="#{leaderSTEManageController.first}"
+						paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}">
+
+						<p:column styleClass="column-text" sortBy="#{leave.stename}">
+							<f:facet name="header">
+								<h:outputText value="User Name" />
+							</f:facet>
+							<h:outputText value="#{leave.stename}" />
+						</p:column>
+
+						<p:column styleClass="column-text" sortBy="#{leave.starttime}">
+							<f:facet name="header">
+								<h:outputText value="Start Time" />
+							</f:facet>
+							<h:outputText value="#{leave.starttime}" />
+						</p:column>
+
+						<p:column styleClass="column-text" sortBy="#{leave.endtime}">
+							<f:facet name="header">
+								<h:outputText value="End Time" />
+							</f:facet>
+							<h:outputText value="#{leave.endtime}" />
+						</p:column>
+
+						<p:column styleClass="column-text" sortBy="#{leave.reason}">
+							<f:facet name="header">
+								<h:outputText value="Reason" />
+							</f:facet>
+							<h:outputText value="#{leave.reason}" />
+						</p:column>
+
+						<p:column styleClass="column-text" sortBy="#{leave.applytime}">
+							<f:facet name="header">
+								<h:outputText value="ApplyTime" />
+							</f:facet>
+							<h:outputText value="#{leave.applytime}" />
+						</p:column>
+
+						<p:column styleClass="column-text" sortBy="#{leave.status}">
+							<f:facet name="header">
+								<h:outputText value="Status" />
+							</f:facet>
+							<h:outputText value="#{leave.status}" />
+						</p:column>
+
+					</p:dataTable>
+
+				</p:panel>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

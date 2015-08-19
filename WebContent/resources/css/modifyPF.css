@@ -1,0 +1,165 @@
+.fc-today {
+	/*background-image: linear-gradient(to bottom, rgb(16, 47, 68), #ffffff )
+		!important;*/
+	background: #C1FFC1 !important;
+}
+
+.selectonemenu-width {
+	width: 202px
+}
+
+.ui-selectonemenu .ui-selectonemenu-trigger {
+	width: 30px !important
+}
+
+.column-text {
+	text-align: center;
+}
+
+.no-border {
+	border: none !important;
+}
+
+.question-vertical-middle {
+	vertical-align: middle !important;
+	width:130px;
+}
+
+.btn-lg {
+	padding: 10px 16px !important;
+	font-size: 18px !important;
+	line-height: 1.3333333 !important;
+	border-radius: 6px !important;
+}
+
+.sidebar-xk {
+	background-color: rgba(16, 47, 68, 0.8) !important;
+}
+
+.nav-sidebar a {
+	color: #FFFFFF !important;
+	font-size: 19px;
+	font-family: Times, TimesNR, 'New Century Schoolbook', Georgia,
+		'New York', serif;
+}
+
+.nav-sidebar a:focus {
+	color: #000000 !important;
+}
+
+.ui-widget-header {
+	background: #F0FFF0 !important;
+}
+
+.selected {
+	background-color: #FCE6C9;
+}
+
+.header-welcome {
+	float: left;
+	color: white;
+	height: 50px;
+	line-height: 50px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.body-bg {
+	background-image: url('../../resources/images/bkg.jpg');
+	background-size: cover;
+}
+
+.ui-button {
+	background-color: #009900;
+	background-image: url('../../resources/images/wood.jpg') !important;
+}
+
+.ui-datatable-odd {
+	background-color: #E0FFFF;
+}
+
+.ui-state-default.ui-inputtextarea {
+	background-color: #FFFFFF;
+	background-image: none !important;
+	width: 200px !important;
+}
+
+.ui-state-default.ui-inputtext {
+	background-color: #FFFFFF;
+	background-image: none !important;
+}
+
+.ui-state-active {
+	background-color: #00FFFF !important;
+	background-image: url('../../resources/images/login.jpg') !important;
+}
+
+.ui-widget-content .ui-widget-header .ui-state-default {
+
+}
+
+.barChart {
+
+}
+
+.dismissChart {
+	width: 1px;
+	height: 1px;
+}
+
+.pay-btn {
+	text-align: center;
+	font-weight: bold;
+}
+
+.pay-btn-size {
+	width: 100px;
+	height: 60px;
+}
+
+.brokeLabel {
+	display: inline;
+	color: red;
+}
+
+.jqplot-point-label {
+	color: white !important;
+}
+
+.ui-slider-range {
+	background: #BBFFFF !important;
+}
+
+.ui-datatable .ui-sortable-column {
+	cursor: pointer;
+	background: aliceblue;
+}
+
+.column-text-checkbox {
+	text-align: center;
+	width: 50px;
+}
+
+.ui-panelgrid-cell {
+	background: aliceblue;
+}
+
+.ui-datatable-footer.ui-widget-header {
+	background: aliceblue !important;
+}
+
+th {
+	background: aliceblue !important;
+}
+
+.ui-button-text {
+	font-weight: bold !important;
+}
+
+.fc-event {
+	cursor: pointer;
+}
+
+.narrow-column {
+	width: 56px;
+	text-align: center;
+}

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/hrMain.xhtml">
+		<ui:define name="content">
+			<h:form id="trainMangeForm">
+				<h:panelGrid columnClasses="value">
+					<p:messages id="tip" />
+					<p:schedule id="schedule"
+						value="#{hrTrainManageController.eventModel}"
+						widgetVar="myschedule" timeZone="GMT+8">
+
+						<p:ajax event="dateSelect"
+							listener="#{hrTrainManageController.onDateSelect}"
+							update="eventDetails" oncomplete="PF('eventDialog').show();" />
+						<p:ajax event="eventSelect"
+							listener="#{hrTrainManageController.onEventSelect}"
+							update="eventDetails" oncomplete="PF('eventDialog').show();" />
+						<p:ajax event="eventMove"
+							listener="#{hrTrainManageController.onEventMove}" update="tip" />
+						<p:ajax event="eventResize"
+							listener="#{hrTrainManageController.onEventResize}" update="tip" />
+
+					</p:schedule>
+				</h:panelGrid>
+			</h:form>
+
+			<p:dialog widgetVar="eventDialog" id="eventDetails"
+				header="Train Details" showEffect="clip" hideEffect="clip"
+				closable="false">
+				<h:form>
+					<p:panel>
+						<p:panelGrid>
+							<p:row styleClass="no-border">
+								<p:column styleClass="no-border">
+									<h:outputLabel for="title" value="Title:" />
+								</p:column>
+								<p:column styleClass="no-border">
+									<p:inputText id="title"
+										value="#{hrTrainManageController.event.title}"
+										requiredMessage="Title is required!" required="true" />
+								</p:column>
+							</p:row>
+
+							<p:row styleClass="no-border">
+								<p:column styleClass="no-border">
+									<h:outputLabel for="from" value="From:" />
+								</p:column>
+								<p:column styleClass="no-border">
+									<p:inputMask id="from"
+										value="#{hrTrainManageController.event.startDate}"
+										mask="99/99/9999">
+										<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT+8" />
+									</p:inputMask>
+								</p:column>
+							</p:row>
+
+							<p:row styleClass="no-border">
+								<p:column styleClass="no-border">
+									<h:outputLabel for="to" value="To:" />
+								</p:column>
+								<p:column styleClass="no-border">
+									<p:inputMask id="to"
+										value="#{hrTrainManageController.event.endDate}"
+										mask="99/99/9999">
+										<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT+8" />
+									</p:inputMask>
+								</p:column>
+							</p:row>
+
+							<p:row styleClass="no-border">
+								<p:column styleClass="no-border">
+									<h:outputLabel for="paperL" value="Choose a Paper:" />
+								</p:column>
+								<p:column styleClass="no-border">
+									<p:selectOneMenu id="paperL" effect="fade"
+										value="#{hrTrainManageController.selectedPaperId}"
+										requiredMessage="You should choose one paper for this train!"
+										required="true">
+										<f:selectItem itemLabel="Select One" itemValue="" />
+										<f:selectItems value="#{hrTrainManageController.paperList}"
+											var="paper" itemLabel="#{paper.name}" itemValue="#{paper.id}" />
+									</p:selectOneMenu>
+								</p:column>
+							</p:row>
+
+							<p:row styleClass="no-border">
+								<p:column styleClass="no-border">
+									<h:outputLabel for="departList" value="Choose a Department:" />
+								</p:column>
+								<p:column styleClass="no-border">
+									<p:selectOneMenu id="departList" effect="fade"
+										value="#{hrTrainManageController.selectedDepartId}"
+										requiredMessage="You should choose one department for this train!"
+										required="true">
+										<f:selectItem itemLabel="Select One" itemValue="" />
+										<f:selectItems
+											value="#{hrTrainManageController.departmentList}"
+											var="depart" itemLabel="#{depart.name}"
+											itemValue="#{depart.id}" />
+									</p:selectOneMenu>
+								</p:column>
+							</p:row>
+
+							<p:row styleClass="no-border">
+								<p:column styleClass="no-border">
+									<h:outputLabel value="Required to finish" />
+								</p:column>
+								<p:column styleClass="no-border">
+									<p:selectBooleanButton
+										value="#{hrTrainManageController.required}" onLabel="Yes"
+										offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close"
+										style="width:60px" />
+								</p:column>
+							</p:row>
+
+							<p:row styleClass="no-border">
+								<p:column styleClass="no-border">
+									<p:commandButton id="addButton" value="Save" ajax="true"
+										actionListener="#{hrTrainManageController.addEvent}"
+										oncomplete="PF('myschedule').update()"
+										update=":eventDetails :trainMangeForm" />
+								</p:column>
+								<p:column styleClass="no-border">
+									<p:commandButton id="discardBtn" value="Discard" ajax="true"
+										actionListener="#{hrTrainManageController.discard}"
+										immediate="true" update="trainMangeForm"
+										onclick="PF('eventDialog').hide()" />
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+						<p:messages id="tip" />
+					</p:panel>
+				</h:form>
+			</p:dialog>
+
+			<p:ajaxStatus onstart="PF('statusDialog').show()"
+				onsuccess="PF('statusDialog').hide()" />
+
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+				closable="false" resizable="false" showHeader="false">
+				<p:graphicImage value="/resources/images/ajax-loader.gif" />
+			</p:dialog>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

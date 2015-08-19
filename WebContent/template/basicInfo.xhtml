@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition>
+	<h:form id="basicInforForm">
+		<p:panel header="Information:">
+			<p:panelGrid cellpadding="5">
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Username:" for="username" />
+					</p:column>
+					<p:column>
+						<p:inputText id="username"
+							value="#{basicInfoController.edituser.username}" required="true"
+							requiredMessage="Username is required." />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column>
+						<p:outputLabel for="gender" value="Gender:" />
+					</p:column>
+					<p:column>
+						<p:selectOneMenu id="gender" style="width:202px"
+							value="#{basicInfoController.edituser.gender}">
+							<f:selectItems value="#{basicInfoController.genderList}"
+								var="gender" itemLabel="#{gender}" itemValue="#{gender}" />
+						</p:selectOneMenu>
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Birthday:" for="birthday" />
+					</p:column>
+					<p:column>
+						<p:calendar id="birthday"
+							value="#{basicInfoController.edituser.birthday}"
+							pattern="yyyy-MM-dd" mask="true" />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Password:" />
+					</p:column>
+					<p:column>
+						<p:commandButton value="Password Change"
+							oncomplete="PF('passwordDialog_w').show()"
+							actionListener="#{basicInfoController.startPasswordEdit}"
+							immediate="true" update="passwordDialog" />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Department:" />
+					</p:column>
+					<p:column>
+						<h:outputText
+							value="#{basicInfoController.edituser.departmentName}" />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column>
+						<p:outputLabel value="ID Number:" />
+					</p:column>
+					<p:column>
+						<h:outputText value="#{basicInfoController.edituser.idno}" />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column colspan="2">
+						<p:commandButton value="Submit" icon="ui-icon-check"
+							id="submitbtn1" update=":basicInforForm"
+							actionListener="#{basicInfoController.submitBasicInfo}"
+							ajax="true" />
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+		</p:panel>
+		<p:messages id="tip" />
+		<p:spacer height="10" />
+		<p:separator />
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			closable="false" resizable="false" showHeader="false">
+			<p:graphicImage value="/resources/images/ajax-loader.gif" />
+		</p:dialog>
+	</h:form>
+
+	<p:dialog id="passwordDialog" widgetVar="passwordDialog_w"
+		closable="false" resizable="false" draggable="true" modal="true"
+		header="Password Setting"
+		visible="#{basicInfoController.passwordEdit}">
+		<h:form id="passwordForm">
+
+			<p:panelGrid columns="2">
+				<h:outputText value="Current Password" />
+				<p:password value="#{basicInfoController.curPassword}" required="true"
+					requiredMessage="Current Password is required"
+					rendered="#{basicInfoController.passwordEdit}" />
+			</p:panelGrid>
+
+			<p:panelGrid columns="2">
+				<h:outputText value="Password" />
+				<p:password value="#{basicInfoController.password}" required="true"
+					requiredMessage="Password Required"
+					rendered="#{basicInfoController.passwordEdit}" />
+				<h:outputText value="PasswordConfirm" />
+				<p:password value="#{basicInfoController.passwordConfirm}"
+					required="true" requiredMessage="PasswordConfirm Required"
+					rendered="#{basicInfoController.passwordEdit}" />
+			</p:panelGrid>
+
+			<p:panelGrid columns="2">
+				<p:commandButton value="OK"
+					actionListener="#{basicInfoController.applyPassword}"
+					rendered="#{basicInfoController.passwordEdit}"
+					update="passwordDialog" />
+				<p:commandButton value="Cancel" immediate="true"
+					actionListener="#{basicInfoController.discardPassword}"
+					update="basicInforForm" oncomplete="PF('passwordDialog_w').hide()"
+					rendered="#{basicInfoController.passwordEdit}" />
+			</p:panelGrid>
+			<p:messages />
+		</h:form>
+	</p:dialog>
+</ui:composition>
+</html>

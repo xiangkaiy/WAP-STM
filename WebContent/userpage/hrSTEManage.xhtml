@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/hrMain.xhtml">
+		<ui:define name="content">
+			<h:form id="form01">
+
+				<p:dataTable id="userTable" widgetVar="steTable"
+					emptyMessage="No employees found with given criteria"
+					filteredValue="#{hrSTEManageController.filteredEmployee}"
+					value="#{hrSTEManageController.userList}" var="user"
+					selectionMode="single" rowKey="#{user.id}"
+					selection="#{hrSTEManageController.selectedUser}" rows="10"
+					paginator="true" paginatorAlwaysVisible="true"
+					paginatorPosition="bottom" first="#{hrSTEManageController.first}"
+					paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}">
+					<p:ajax event="rowSelect"
+						listener="#{hrSTEManageController.onRowSelect}"
+						oncomplete="PF('detailDialog_w').show();drawWorkTimeBar();"
+						update="detailDialog" />
+
+					<f:facet name="header">
+						<p:outputPanel>
+							<h:outputText value="Search all fields:" />
+							<p:inputText id="globalFilter" onkeyup="PF('steTable').filter()"
+								style="width:150px" placeholder="Enter keyword" />
+						</p:outputPanel>
+					</f:facet>
+
+					<p:column filterBy="#{user.email}" sortBy="#{user.email}"
+						filterMatchMode="contains" styleClass="column-text">
+						<f:facet name="header">
+							<h:outputText value="Email" />
+						</f:facet>
+						<h:outputText value="#{user.email}" />
+					</p:column>
+
+
+					<p:column filterBy="#{user.idno}" sortBy="#{user.idno}"
+						filterMatchMode="contains" styleClass="column-text">
+						<f:facet name="header">
+							<h:outputText value="ID Number" />
+						</f:facet>
+						<h:outputText value="#{user.idno}" />
+					</p:column>
+
+
+					<p:column filterBy="#{user.username}" sortBy="#{user.username}"
+						filterMatchMode="contains" styleClass="column-text">
+						<f:facet name="header">
+							<h:outputText value="Username" />
+						</f:facet>
+						<h:outputText value="#{user.username}" />
+					</p:column>
+
+					<p:column filterBy="#{user.departmentName}"
+						styleClass="column-text" sortBy="#{user.departmentName}">
+						<f:facet name="header">
+							<h:outputText value="Department Name" />
+						</f:facet>
+						<f:facet name="filter">
+							<p:selectOneMenu onchange="PF('steTable').filter()">
+								<f:selectItem itemLabel="Choose One" itemValue="#{null}"
+									noSelectionOption="true" />
+								<f:selectItems value="#{hrSTEManageController.departmentList}"
+									var="depart" itemLabel="#{depart.name}"
+									itemValue="#{depart.name}" />
+							</p:selectOneMenu>
+						</f:facet>
+						<h:outputText value="#{user.departmentName}" />
+					</p:column>
+
+					<p:column filterBy="#{user.gender}" sortBy="#{user.gender}"
+						filterMatchMode="equals" styleClass="column-text">
+						<f:facet name="header">
+							<h:outputText value="Gender" />
+						</f:facet>
+						<f:facet name="filter">
+							<p:selectOneMenu onchange="PF('steTable').filter()">
+								<f:selectItem itemLabel="Select One" itemValue="#{null}"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="Male" itemValue="male" />
+								<f:selectItem itemLabel="Female" itemValue="female" />
+							</p:selectOneMenu>
+						</f:facet>
+						<h:outputText value="#{user.gender}" />
+					</p:column>
+				</p:dataTable>
+
+
+				<p:messages id="tip" />
+
+				<p:ajaxStatus onstart="PF('statusDialog').show()"
+					onsuccess="PF('statusDialog').hide()" />
+
+				<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+					closable="false" resizable="false" showHeader="false">
+					<p:graphicImage value="/resources/images/ajax-loader.gif" />
+				</p:dialog>
+				<p:separator />
+				<p:panelGrid>
+					<p:row>
+						<p:column>
+							<p:outputLabel for="stime" value="BeginTime:" />
+						</p:column>
+						<p:column>
+							<p:calendar id="stime"
+								value="#{hrSTEManageController.intervalStime}"
+								pattern="MM/dd/yyyy HH:mm:ss" />
+						</p:column>
+						<p:column>
+							<p:outputLabel for="etime" value="EndTime:" />
+						</p:column>
+						<p:column>
+							<p:calendar id="etime"
+								value="#{hrSTEManageController.intervalEtime}"
+								pattern="MM/dd/yyyy HH:mm:ss" />
+						</p:column>
+						<p:column>
+							<p:commandButton id="searchBtn" ajax="true" icon="ui-icon-tag"
+								value="Search" update="form01"
+								actionListener="#{hrSTEManageController.searchSalary}" />
+						</p:column>
+					</p:row>
+					<p:row rendered="#{hrSTEManageController.showChart}">
+						<p:column colspan="5">
+							<div id="intervalSalaryDiv"></div>
+						</p:column>
+					</p:row>
+					<p:row rendered="#{hrSTEManageController.showChart}">
+						<p:column colspan="5">
+							<div id="departmentSalaryDiv"></div>
+						</p:column>
+					</p:row>
+					<p:row rendered="#{hrSTEManageController.showChart}">
+						<p:column colspan="5">
+							<div id="departmentFineDiv"></div>
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+
+
+				<p:inputText type="hidden" id="intervalSalary"
+					value="#{hrSTEManageController.intervalSalary}" />
+				<p:inputText type="hidden" id="intervalFine"
+					value="#{hrSTEManageController.intervalFine}" />
+				<p:inputText type="hidden" id="departList"
+					value="#{hrSTEManageController.departList}" />
+				<p:inputText type="hidden" id="departSalaryList"
+					value="#{hrSTEManageController.departSalaryList}" />
+				<p:inputText type="hidden" id="departFineList"
+					value="#{hrSTEManageController.departFineList}" />
+			</h:form>
+
+			<p:dialog id="detailDialog" closable="true" width="760"
+				position="300,100"
+				visible="#{hrSTEManageController.editMode or hrSTEManageController.addMode}"
+				widgetVar="detailDialog_w" modal="true" resizable="false"
+				draggable="true" header="User Detail">
+				<h:form id="detailForm">
+
+					<p:panel style="width:100%" header="Latest Pay Information">
+						<p:panelGrid style="width:100%">
+
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Latest Pay Time" />
+								</p:column>
+								<p:column>
+									<p:outputLabel
+										value="#{hrSTEManageController.selectedPayment.givetime}" />
+								</p:column>
+							</p:row>
+
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Start Time" />
+								</p:column>
+								<p:column>
+									<p:outputLabel
+										value="#{hrSTEManageController.selectedPayment.startdate}" />
+								</p:column>
+							</p:row>
+
+							<p:row>
+								<p:column>
+									<p:outputLabel value="End Time" />
+								</p:column>
+								<p:column>
+									<p:outputLabel
+										value="#{hrSTEManageController.selectedPayment.enddate}" />
+								</p:column>
+							</p:row>
+
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Money" />
+								</p:column>
+								<p:column>
+									<p:outputLabel
+										value="#{hrSTEManageController.selectedPayment.money}$" />
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+					</p:panel>
+					<p:inputText type="hidden" id="currentWorkTime"
+						value="#{hrSTEManageController.currentWorkTime}" />
+					<p:inputText type="hidden" id="currentLeaveTime"
+						value="#{hrSTEManageController.currentLeaveTime}" />
+
+					<p:panel
+						header="Time Usage(From #{hrSTEManageController.newPay.startdate} to #{hrSTEManageController.newPayEndtime})">
+						<p:panelGrid>
+							<div id="currentTimeChart"></div>
+							<p:row>
+								<p:column rowspan="7">
+									<div id="curWorkTimebarChart"></div>
+								</p:column>
+								<p:column>
+									<p:outputLabel value="Final Pay($):" />
+								</p:column>
+								<p:column colspan="3">
+									<p:outputLabel
+										value="#{hrSTEManageController.finalTotalPayAmount}" />
+								</p:column>
+
+							</p:row>
+
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Original Pay" />
+								</p:column>
+								<p:column>
+									<p:outputLabel value="#{hrSTEManageController.totalPayAmount}" />
+								</p:column>
+							</p:row>
+
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Fine($):" />
+								</p:column>
+								<p:column>
+									<p:outputLabel value="#{hrSTEManageController.totalFine}" />
+								</p:column>
+							</p:row>
+
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Start Time:" />
+								</p:column>
+								<p:column>
+									<p:outputLabel
+										value="#{hrSTEManageController.newPay.startdate}" />
+								</p:column>
+							</p:row>
+
+							<p:row>
+								<p:column>
+									<p:outputLabel value="End Time:" />
+								</p:column>
+								<p:column>
+									<p:outputLabel value="#{hrSTEManageController.newPayEndtime}" />
+								</p:column>
+							</p:row>
+
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Total Time(hour):" />
+								</p:column>
+								<p:column>
+									<p:outputLabel value="#{hrSTEManageController.totalTimeHour}" />
+								</p:column>
+							</p:row>
+
+							<p:row>
+								<p:column colspan="2" styleClass="pay-btn">
+									<p:commandButton id="payBtn" value="Pay" ajax="true"
+										styleClass="pay-btn-size"
+										actionListener="#{hrSTEManageController.pay}" type="submit"
+										update=":detailDialog :form01" />
+								</p:column>
+							</p:row>
+
+						</p:panelGrid>
+					</p:panel>
+				</h:form>
+			</p:dialog>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

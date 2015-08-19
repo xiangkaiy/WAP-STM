@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/hrMain.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+				<p:panel header="All Paper List">
+					<p:dataTable id="applyFromLeader" selectionMode="single"
+						value="#{hrPaperManageController.questionList}" var="item"
+						rowKey="#{item.id}" rows="10" paginator="true"
+						selection="#{hrPaperManageController.selectedPaper}"
+						paginatorAlwaysVisible="true" paginatorPosition="bottom"
+						first="#{hrPaperManageController.first}"
+						paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}">
+
+						<p:ajax event="rowSelect"
+							listener="#{hrPaperManageController.onRowSelect}"
+							oncomplete="PF('detailDialog_w').show();" update="detailDialog" />
+
+						<p:column style="width:132px;text-align: center">
+							<f:facet name="header">
+								<h:outputText value="Paper Name" />
+							</f:facet>
+							<h:outputText value="#{item.name}" />
+						</p:column>
+
+						<p:column style="width:132px;text-align: center">
+							<f:facet name="header">
+								<h:outputText value="Question" />
+							</f:facet>
+							<h:outputText value="#{item.questionView}" />
+						</p:column>
+
+					</p:dataTable>
+
+					<p:commandButton value="New Paper"
+						actionListener="#{hrPaperManageController.startAdd}"
+						oncomplete="PF('detailDialog_w').show();" update="detailDialog" />
+					<p:messages id="tip" />
+				</p:panel>
+
+				<p:ajaxStatus onstart="PF('statusDialog').show()"
+					onsuccess="PF('statusDialog').hide()" />
+
+				<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+					closable="false" resizable="false" showHeader="false">
+					<p:graphicImage value="/resources/images/ajax-loader.gif" />
+				</p:dialog>
+			</h:form>
+
+			<p:dialog id="detailDialog" closable="false" height="600"
+				width="1200"
+				visible="#{hrPaperManageController.editMode or hrPaperManageController.addMode}"
+				header="#{hrPaperManageController.dialogHeader}"
+				widgetVar="detailDialog_w" modal="true" showEffect="fade"
+				hideEffect="fade" draggable="true" resizable="false">
+				<h:form id="paperdetail">
+					<p:outputLabel value="Paper Name:" />
+					<p:inputText required="true"
+						requiredMessage="Paper name can not be empty!"
+						value="#{hrPaperManageController.selectedPaper.name}" />
+
+					<ui:repeat var="q"
+						value="#{hrPaperManageController.selectedPaperView}">
+						<p:panel header="Question">
+							<p:panelGrid>
+								<p:row styleClass="no-border">
+									<p:column styleClass="no-border">
+										<p:outputLabel styleClass="question-vertical-middle"
+											value="Question:" />
+									</p:column>
+									<p:column styleClass="no-border">
+										<p:editor value="#{q.question}" />
+									</p:column>
+								</p:row>
+
+								<p:row styleClass="no-border">
+									<p:column styleClass="no-border">
+										<p:outputLabel styleClass="question-vertical-middle"
+											value="Options:" />
+									</p:column>
+									<p:column styleClass="no-border">
+										<p:outputLabel value="1:" />
+										<p:inputText value="#{q.option1}" />
+									</p:column>
+
+									<p:column styleClass="no-border">
+										<p:outputLabel value="2:" />
+										<p:inputText value="#{q.option2}" />
+									</p:column>
+
+									<p:column styleClass="no-border">
+										<p:outputLabel value="3:" />
+										<p:inputText value="#{q.option3}" />
+									</p:column>
+
+									<p:column styleClass="no-border">
+										<p:outputLabel value="4:" />
+										<p:inputText value="#{q.option4}" />
+									</p:column>
+								</p:row>
+
+								<p:row styleClass="no-border">
+									<p:column styleClass="no-border">
+										<p:outputLabel styleClass="question-vertical-middle"
+											value="Right Answers:" />
+									</p:column>
+									<p:column colspan="3" styleClass="no-border">
+										<p:selectManyButton value="#{q.answer}">
+											<f:selectItem itemLabel="Option1" itemValue="1" />
+											<f:selectItem itemLabel="Option2" itemValue="2" />
+											<f:selectItem itemLabel="Option3" itemValue="3" />
+											<f:selectItem itemLabel="Option4" itemValue="4" />
+										</p:selectManyButton>
+									</p:column>
+								</p:row>
+
+								<p:row styleClass="no-border">
+									<p:column colspan="4" styleClass="no-border">
+										<p:commandButton value="Delete" ajax="true" immediate="true"
+											update="paperdetail"
+											actionListener="#{hrPaperManageController.deleteQuestion}">
+											<f:param name="questionIndex" value="#{q.questionIndex}" />
+										</p:commandButton>
+									</p:column>
+								</p:row>
+							</p:panelGrid>
+						</p:panel>
+					</ui:repeat>
+
+					<p:panel>
+						<p:panelGrid>
+							<p:row styleClass="no-border">
+								<p:column styleClass="no-border">
+									<p:commandButton id="applyBtn" value="Save" ajax="true"
+										actionListener="#{hrPaperManageController.apply}"
+										update=":detailDialog :form" type="submit" />
+								</p:column>
+
+								<p:column styleClass="no-border"
+									rendered="#{hrPaperManageController.browseMode}">
+									<p:commandButton id="DeleteBtn" value="Delete"
+										onclick="PF('deleteConfirmDialog_w').show()" />
+								</p:column>
+
+								<p:column styleClass="no-border">
+									<p:commandButton id="newquestionBtn" value="Add Question"
+										ajax="true"
+										actionListener="#{hrPaperManageController.addQuestion}"
+										immediate="true" update=":detailDialog :form :paperdetail" />
+								</p:column>
+
+								<p:column styleClass="no-border">
+									<p:commandButton id="discardBtn" value="Discard" ajax="true"
+										actionListener="#{hrPaperManageController.discard}"
+										immediate="true" update="form"
+										onclick="PF('detailDialog_w').hide()" />
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+						<p:messages />
+					</p:panel>
+
+				</h:form>
+			</p:dialog>
+
+			<p:confirmDialog id="deleteConfirmDialog"
+				widgetVar="deleteConfirmDialog_w"
+				message="Are you sure delete this user?"
+				header="Confirm Delete User" severity="alert">
+				<h:form id="confirmForm">
+					<p:commandButton id="confirmBtn" value="OK" update="form"
+						oncomplete="PF('deleteConfirmDialog_w').hide(); PF('detailDialog_w').hide();"
+						actionListener="#{hrPaperManageController.deletePaper}" />
+					<p:commandButton id="cancelBtn" value="Cancel"
+						onclick="PF('deleteConfirmDialog_w').hide()" />
+
+				</h:form>
+			</p:confirmDialog>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

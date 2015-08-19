@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/steMain.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+				<p:messages id="tip" />
+				<p:panel header="Payroll List">
+					<h:panelGrid columns="2" cellpadding="5">
+						<p:dataTable id="paytable" var="pay"
+							value="#{steSalaryController.paylist}">
+							<p:column headerText="PayTime" sortBy="#{pay.givetime}"
+								styleClass="column-text">
+								<h:outputText value="#{pay.givetime}" />
+							</p:column>
+							<p:column headerText="StartTime" sortBy="#{pay.startdate}"
+								styleClass="column-text">
+
+								<h:outputText value="#{pay.startdate}" />
+							</p:column>
+							<p:column headerText="EndTime" sortBy="#{pay.enddate}"
+								styleClass="column-text">
+								<h:outputText value="#{pay.enddate}" />
+							</p:column>
+							<p:column headerText="Total Time(minute)"
+								sortBy="#{pay.totaltime}" styleClass="column-text">
+								<h:outputText value="#{pay.totaltime}" />
+							</p:column>
+							<p:column headerText="Fine($)" sortBy="#{pay.fine}"
+								styleClass="column-text">
+								<h:outputText value="#{pay.fine}" />
+							</p:column>
+							<p:column headerText="Final Salary($)" sortBy="#{pay.money}"
+								styleClass="column-text">
+								<h:outputText value="#{pay.money}" />
+							</p:column>
+						</p:dataTable>
+					</h:panelGrid>
+				</p:panel>
+
+				<p:inputText type="hidden" id="lateCount"
+					value="#{steSalaryController.lateCount}" />
+				<p:inputText type="hidden" id="leaveEarlyCount"
+					value="#{steSalaryController.leaveEarlyCount}" />
+				<p:inputText type="hidden" id="onScheduleCount"
+					value="#{steSalaryController.onScheduleCount}" />
+
+
+				<p:separator />
+
+				<p:panel>
+					<div id="worktimeChart"></div>
+				</p:panel>
+
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

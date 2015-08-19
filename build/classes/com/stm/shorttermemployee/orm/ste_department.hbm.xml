@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping
+PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.stm.shorttermemployee.pojo.Department" table="ste_department">
+		<id name="id" column="id" type="long" />
+		<property name="name" column="name" type="string" />
+		<property name="maxstenumber" column="maxstenumber" type="integer" />
+		<property name="usedstenumber" column="usedstenumber" type="integer" />
+		<property name="priority" column="priority" type="integer" />
+		<property name="leaderid" column="leaderid" type="long" />
+		<property name="introduction" column="introduction" type="string" />
+	</class>
+</hibernate-mapping>

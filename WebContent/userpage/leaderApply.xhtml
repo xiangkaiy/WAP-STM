@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/leaderMain.xhtml">
+		<ui:define name="content">
+			<h:form>
+				<p:panel header="Apply More Short-term Employee">
+					<p:panelGrid cellpadding="5">
+						<f:facet name="header">
+							<p:row>
+								<p:column colspan="2">Basic Requirement</p:column>
+								<p:column colspan="1">Office Skills</p:column>
+								<p:column colspan="1">Programming Language</p:column>
+							</p:row>
+
+						</f:facet>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel value="STE Amount" for="steamount" />
+							</p:column>
+							<p:column>
+								<p:inputText id="steamount"
+									value="#{leaderApplyController.apply.steamount}"
+									required="true" requiredMessage="STE amount is required.">
+									<f:validateLongRange minimum="1" maximum="100" />
+								</p:inputText>
+							</p:column>
+							<p:column rowspan="3">
+								<p:selectManyCheckbox id="grid"
+									value="#{leaderApplyController.selectedOfficeSkill}"
+									layout="grid" columns="3">
+									<f:selectItems value="#{leaderApplyController.officeSkillList}"
+										var="skill" itemLabel="#{skill}" itemValue="#{skill}" />
+								</p:selectManyCheckbox>
+							</p:column>
+
+							<p:column rowspan="3">
+								<p:selectManyCheckbox id="grid2"
+									value="#{leaderApplyController.selectedProLanguage}"
+									layout="grid" columns="4">
+									<f:selectItems value="#{leaderApplyController.proLanguageList}"
+										var="skill" itemLabel="#{skill}" itemValue="#{skill}" />
+								</p:selectManyCheckbox>
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Working Hour Per Week" for="workhour" />
+							</p:column>
+							<p:column>
+								<p:inputText id="workhour"
+									value="#{leaderApplyController.apply.expectworkhour}"
+									required="true" requiredMessage="Working Hour is required.">
+									<f:validateLongRange minimum="1" maximum="168" />
+								</p:inputText>
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Join Date:" for="joindate" />
+							</p:column>
+							<p:column>
+								<p:calendar id="joindate" required="true"
+									requiredMessage="Join Date is required."
+									value="#{leaderApplyController.apply.expectjoindate}"
+									pattern="yyyy-MM-dd" mask="true" />
+							</p:column>
+						</p:row>
+
+					</p:panelGrid>
+
+					<p:commandButton value="Submit" icon="ui-icon-check" ajax="false"
+						actionListener="#{leaderApplyController.submitApply}" />
+					<p:messages id="tip" />
+				</p:panel>
+
+				<p:ajaxStatus onstart="PF('statusDialog').show()"
+					onsuccess="PF('statusDialog').hide()" />
+
+				<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+					closable="false" resizable="false" showHeader="false">
+					<p:graphicImage value="/resources/images/ajax-loader.gif" />
+				</p:dialog>
+
+				<p:panel header="Old Apply">
+					<p:dataTable id="applyFromLeader"
+						value="#{leaderApplyController.applyList}" var="item"
+						rowKey="#{apply.id}" rows="10" paginator="true"
+						paginatorAlwaysVisible="true" paginatorPosition="bottom"
+						first="#{leaderApplyController.first}"
+						paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}">
+
+						<p:column styleClass="column-text"
+							sortBy="#{item.leader.username}">
+							<f:facet name="header">
+								<h:outputText value="Leader Name" />
+							</f:facet>
+							<h:outputText value="#{item.leader.username}" />
+						</p:column>
+
+						<p:column styleClass="column-text" sortBy="#{item.depart.name}">
+							<f:facet name="header">
+								<h:outputText value="Department Name" />
+							</f:facet>
+							<h:outputText value="#{item.depart.name}" />
+						</p:column>
+
+
+						<p:column styleClass="column-text"
+							sortBy="#{item.apply.steamount}">
+							<f:facet name="header">
+								<h:outputText value="STEAmount" />
+							</f:facet>
+							<h:outputText value="#{item.apply.steamount}" />
+						</p:column>
+
+
+						<p:column styleClass="column-text"
+							sortBy="#{item.apply.officeskill}">
+							<f:facet name="header">
+								<h:outputText value="OfficeSkill" />
+							</f:facet>
+							<h:outputText value="#{item.apply.officeskill}" />
+						</p:column>
+
+						<p:column styleClass="column-text"
+							sortBy="#{item.apply.programlanguage}">
+							<f:facet name="header">
+								<h:outputText value="Program Skill" />
+							</f:facet>
+							<h:outputText value="#{item.apply.programlanguage}" />
+						</p:column>
+
+						<p:column styleClass="column-text"
+							sortBy="#{item.apply.expectjoindate}">
+							<f:facet name="header">
+								<h:outputText value="Expected joindate" />
+							</f:facet>
+							<h:outputText value="#{item.apply.expectjoindate}" />
+						</p:column>
+
+						<p:column styleClass="column-text"
+							sortBy="#{item.apply.expectworkhour}">
+							<f:facet name="header">
+								<h:outputText value="Expected Work Hour" />
+							</f:facet>
+							<h:outputText value="#{item.apply.expectworkhour}" />
+						</p:column>
+
+						<p:column styleClass="column-text" sortBy="#{item.apply.status}">
+							<f:facet name="header">
+								<h:outputText value="Status" />
+							</f:facet>
+							<h:outputText
+								value="#{item.apply.status == 1? 'Unhandled':(item.apply.status==2?'Passed':'Refused')}" />
+						</p:column>
+
+
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

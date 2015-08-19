@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/adminMain.xhtml">
+		<ui:define name="content">
+			<h:form id="form01">
+
+				<p:dataTable id="userTable"
+					value="#{adminUserManageController.userList}" var="user"
+					selectionMode="single" rowKey="#{user.id}"
+					selection="#{adminUserManageController.selectedUser}" rows="10"
+					paginator="true" paginatorAlwaysVisible="true"
+					paginatorPosition="bottom"
+					first="#{adminUserManageController.first}"
+					paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}">
+					<p:ajax event="rowSelect"
+						listener="#{adminUserManageController.onRowSelect}"
+						oncomplete="PF('detailDialog_w').show();" update="detailDialog" />
+
+					<p:column style="width:20%" sortBy="#{user.email}">
+						<f:facet name="header">
+							<h:outputText value="Email" />
+						</f:facet>
+						<h:outputText value="#{user.email}" />
+					</p:column>
+
+					<p:column style="width:20%" sortBy="#{user.rolename}">
+						<f:facet name="header">
+							<h:outputText value="Rolename" />
+						</f:facet>
+						<h:outputText value="#{user.rolename}" />
+					</p:column>
+
+					<p:column style="width:20%" sortBy="#{user.idno}">
+						<f:facet name="header">
+							<h:outputText value="ID Number" />
+						</f:facet>
+						<h:outputText value="#{user.idno}" />
+					</p:column>
+
+
+					<p:column style="width:20%" sortBy="#{user.username}">
+						<f:facet name="header">
+							<h:outputText value="Username" />
+						</f:facet>
+						<h:outputText value="#{user.username}" />
+					</p:column>
+
+					<p:column style="width:20%" sortBy="#{user.gender}">
+						<f:facet name="header">
+							<h:outputText value="Gender" />
+						</f:facet>
+						<h:outputText value="#{user.gender}" />
+					</p:column>
+
+				</p:dataTable>
+				<p:commandButton value="New User"
+					actionListener="#{adminUserManageController.startAdd}"
+					oncomplete="PF('detailDialog_w').show();" update="detailDialog" />
+
+				<p:messages id="tip" />
+
+				<p:ajaxStatus onstart="PF('statusDialog').show()"
+					onsuccess="PF('statusDialog').hide()" />
+
+				<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+					closable="false" resizable="false" showHeader="false">
+					<p:graphicImage value="/resources/images/ajax-loader.gif" />
+				</p:dialog>
+			</h:form>
+
+			<p:dialog id="detailDialog" closable="false" width="560"
+				visible="#{adminUserManageController.editMode or adminUserManageController.addMode}"
+				widgetVar="detailDialog_w" modal="true" resizable="false"
+				draggable="true" header="User Detail">
+				<h:form id="detailForm">
+					<p:focus context=":detailDialog" for="okBtn" />
+					<p:panelGrid columns="2">
+						<p:outputLabel value="Email" />
+
+						<p:outputLabel
+							value="#{adminUserManageController.selectedUser.email}"
+							rendered="#{adminUserManageController.browseMode}" />
+
+						<p:inputText
+							value="#{adminUserManageController.editingUser.email}"
+							rendered="#{adminUserManageController.addMode or adminUserManageController.editMode}"
+							size="20" maxlength="20" requiredMessage="Email Required" />
+
+						<p:outputLabel value="Password"
+							rendered="#{adminUserManageController.addMode or adminUserManageController.editMode}" />
+						<p:commandButton value="Password Change"
+							rendered="#{adminUserManageController.editMode}"
+							oncomplete="PF('passwordDialog_w').show()"
+							actionListener="#{adminUserManageController.startPasswordEdit}"
+							immediate="true" update="passwordDialog" />
+
+						<p:commandButton value="Set Password"
+							rendered="#{adminUserManageController.addMode}"
+							oncomplete="PF('passwordDialog_w').show()"
+							actionListener="#{adminUserManageController.startPasswordEdit}"
+							immediate="true" update="passwordDialog" />
+						<p:outputLabel value="ID Number" />
+						<p:outputLabel
+							value="#{adminUserManageController.selectedUser.idno}"
+							rendered="#{adminUserManageController.browseMode}" />
+						<p:inputText value="#{adminUserManageController.editingUser.idno}"
+							rendered="#{adminUserManageController.addMode or adminUserManageController.editMode}"
+							size="20" maxlength="20" requiredMessage="ID number Required" />
+
+						<p:outputLabel value="Role" />
+						<p:outputLabel
+							value="#{adminUserManageController.selectedUser.rolename}"
+							rendered="#{adminUserManageController.browseMode}" />
+
+						<p:selectOneMenu
+							valueChangeListener="#{adminUserManageController.roleSelectChanged}"
+							value="#{adminUserManageController.editingUser.rolename}"
+							rendered="#{adminUserManageController.addMode or adminUserManageController.editMode}">
+							<f:selectItems value="#{adminUserManageController.roleList}"
+								var="role" itemLabel="#{role}" itemValue="#{role}" />
+							<p:ajax update=":detailForm" process="@form" />
+						</p:selectOneMenu>
+						<p:outputLabel value="Username" />
+						<p:outputLabel
+							value="#{adminUserManageController.selectedUser.username}"
+							rendered="#{adminUserManageController.browseMode}" />
+						<p:inputText
+							value="#{adminUserManageController.editingUser.username}"
+							rendered="#{adminUserManageController.addMode or adminUserManageController.editMode}"
+							size="20" maxlength="20" requiredMessage="Username Required" />
+						<p:outputLabel value="Gender" />
+						<p:outputLabel
+							value="#{adminUserManageController.selectedUser.gender}"
+							rendered="#{adminUserManageController.browseMode}" />
+						<p:selectOneMenu
+							value="#{adminUserManageController.editingUser.gender}"
+							rendered="#{adminUserManageController.addMode or adminUserManageController.editMode}">
+							<f:selectItems value="#{adminUserManageController.genderList}"
+								var="gender" itemLabel="#{gender}" itemValue="#{gender}" />
+						</p:selectOneMenu>
+						<p:outputLabel value="Department"
+							rendered="#{adminUserManageController.browseMode}" />
+						<p:outputLabel value="Department"
+							rendered="#{(adminUserManageController.addMode or adminUserManageController.editMode) and (adminUserManageController.showDepartmentList)}" />
+						<p:outputLabel
+							value="#{adminUserManageController.selectedUser.departmentName}"
+							rendered="#{adminUserManageController.browseMode}" />
+						<p:selectOneMenu
+							value="#{adminUserManageController.editingUser.departmentid}"
+							rendered="#{(adminUserManageController.addMode or adminUserManageController.editMode) and (adminUserManageController.showDepartmentList)}">
+							<f:selectItem itemLabel="Choose One" />
+							<f:selectItems
+								value="#{adminUserManageController.departmentList}" var="depart"
+								itemLabel="#{depart.name}" itemValue="#{depart.id}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+
+					<p:panelGrid columns="2">
+						<p:toolbar>
+							<p:toolbarGroup align="left"
+								rendered="#{adminUserManageController.browseMode}">
+								<p:commandButton id="okBtn" value="OK" ajax="true"
+									onclick="PF('detailDialog_w').hide();" update=":form01" />
+							</p:toolbarGroup>
+							<p:toolbarGroup align="right"
+								rendered="#{adminUserManageController.browseMode}">
+								<p:commandButton id="startEditBtn" value="Edit" ajax="true"
+									update=":detailDialog"
+									actionListener="#{adminUserManageController.startEdit}"
+									oncomplete="PF('detailDialog_w').show()" />
+								<p:commandButton id="DeleteBtn" value="Delete"
+									onclick="PF('deleteConfirmDialog_w').show()" />
+							</p:toolbarGroup>
+							<p:toolbarGroup align="left"
+								rendered="#{!adminUserManageController.browseMode}">
+								<p:commandButton id="applyBtn" value="Apply" ajax="true"
+									actionListener="#{adminUserManageController.apply}"
+									update=":detailDialog :form01" type="submit" />
+							</p:toolbarGroup>
+							<p:toolbarGroup align="right"
+								rendered="#{!adminUserManageController.browseMode}">
+								<p:commandButton id="discardBtn" value="Discard" ajax="true"
+									actionListener="#{adminUserManageController.discard}"
+									immediate="true" update="form01"
+									onclick="PF('detailDialog_w').hide()" />
+							</p:toolbarGroup>
+						</p:toolbar>
+					</p:panelGrid>
+					<p:messages />
+				</h:form>
+			</p:dialog>
+			<p:dialog id="passwordDialog" widgetVar="passwordDialog_w"
+				closable="false" resizable="false" draggable="true" modal="true"
+				header="Password Setting"
+				visible="#{adminUserManageController.passwordEdit}">
+				<h:form id="passwordForm">
+					<h:outputText value="Enter Password" />
+					<p:panelGrid columns="2">
+						<h:outputText value="Password" />
+						<p:password value="#{adminUserManageController.password}"
+							required="true" requiredMessage="PasswordRequired"
+							rendered="#{adminUserManageController.passwordEdit}" />
+						<h:outputText value="PasswordConfirm" />
+						<p:password value="#{adminUserManageController.passwordConfirm}"
+							required="true" requiredMessage="PasswordConfirmRequired"
+							rendered="#{adminUserManageController.passwordEdit}" />
+					</p:panelGrid>
+					<p:panelGrid columns="2">
+						<p:commandButton value="OK"
+							actionListener="#{adminUserManageController.applyPassword}"
+							rendered="#{adminUserManageController.passwordEdit}"
+							update="passwordDialog" />
+						<p:commandButton value="Cancel" immediate="true"
+							actionListener="#{adminUserManageController.discardPassword}"
+							update="detailDialog" oncomplete="PF('passwordDialog_w').hide()"
+							rendered="#{adminUserManageController.passwordEdit}" />
+					</p:panelGrid>
+					<p:messages />
+				</h:form>
+			</p:dialog>
+
+			<p:confirmDialog id="deleteConfirmDialog"
+				widgetVar="deleteConfirmDialog_w"
+				message="Are you sure delete this user?"
+				header="Confirm Delete User" severity="alert">
+				<h:form id="confirmForm">
+					<p:commandButton id="confirmBtn" value="OK" update="form01"
+						oncomplete="PF('deleteConfirmDialog_w').hide(); PF('detailDialog_w').hide();"
+						actionListener="#{adminUserManageController.deleteUser}" />
+					<p:commandButton id="cancelBtn" value="Cancel"
+						onclick="PF('deleteConfirmDialog_w').hide()" />
+
+				</h:form>
+			</p:confirmDialog>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

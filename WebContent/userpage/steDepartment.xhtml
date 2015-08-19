@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/steMain.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+				<p:panel header="Department Information:" toggleable="true"
+					rendered="#{steDetailController.belongDepart != null}">
+					<p:panelGrid>
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Department Name:" />
+							</p:column>
+							<p:column>
+								<p:outputLabel id="name"
+									value="#{steDetailController.belongDepart.name}" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Leader:" />
+							</p:column>
+							<p:column>
+								<p:outputLabel id="leader"
+									value="#{steDetailController.leader.username}" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Introduction:" />
+							</p:column>
+							<p:column>
+								<p:outputLabel id="introduction"
+									value="#{steDetailController.belongDepart.introduction}" />
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:panel>
+				<p:separator />
+
+				<p:panel rendered="#{steDetailController.steStatus == '1'}"
+					toggleable="true">
+					<h:panelGrid>
+						<p:outputLabel
+							value="Before you begin work, you should pass all the required train!" />
+					</h:panelGrid>
+				</p:panel>
+
+				<p:panel rendered="#{steDetailController.steStatus == '3'}"
+					toggleable="true">
+					<h:panelGrid>
+						<p:outputLabel
+							value="You have not joined any department yet! You should complete your detail information!" />
+					</h:panelGrid>
+				</p:panel>
+
+				<p:panel rendered="">
+					<div id="chart"></div>
+					<div>
+						<p:outputLabel value="Leader's Comment:" />
+						<p:outputLabel value="#{steDetailController.cmt}" />
+					</div>
+					<p:inputText type="hidden" id="workEfficiency"
+						value="#{steDetailController.workEfficiency}" />
+					<p:inputText type="hidden" id="studyAbility"
+						value="#{steDetailController.studyAbility}" />
+					<p:inputText type="hidden" id="meetingParticipate"
+						value="#{steDetailController.meetingParticipate}" />
+					<p:inputText type="hidden" id="teamWork"
+						value="#{steDetailController.teamWork}" />
+				</p:panel>
+
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

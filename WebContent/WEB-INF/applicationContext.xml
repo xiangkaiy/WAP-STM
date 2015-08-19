@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context-3.2.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+	<!-- Enable Spring Annotation Configuration -->
+	<context:annotation-config />
+	<!-- Scan for all of Spring components such as Spring Service -->
+	<context:component-scan base-package="com.stm.shorttermemployee.service"></context:component-scan>
+	<context:component-scan base-package="com.stm.shorttermemployee.dao"></context:component-scan>
+	<context:component-scan base-package="com.stm.shorttermemployee.controller"></context:component-scan>
+	<!-- Create Data Source bean -->
+	<bean id="dataSource" class="oracle.jdbc.pool.OracleDataSource"
+		destroy-method="close">
+		<property name="URL" value="jdbc:oracle:thin:@172.26.142.249:1521:nekyoiku" />
+		<property name="user" value="ST1504C146" />
+		<property name="password" value="ST1504C146" />
+		<property name="connectionCachingEnabled" value="true"/>
+	</bean>
+	<!-- Define SessionFactory bean -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+
+		<property name="mappingDirectoryLocations">
+			<list>
+                <value>classpath*:/com/stm/shorttermemployee/orm</value>
+        	</list>
+		</property>
+
+		<property name="configLocation">
+            <value>classpath:hibernate.cfg.xml</value>
+        </property>
+	</bean>
+	<!-- Transaction Manager -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<!-- Detect @Transactional Annotation -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+</beans>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<title>STE System</title>
+	</f:facet>
+
+	<f:facet name="middle">
+		<h:outputStylesheet name="bootstrap/css/bootstrap.css" />
+
+		<h:outputStylesheet name="css/dashboard.css" />
+
+		<h:outputStylesheet name="css/login.css" />
+
+		<script
+			src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" />
+
+		<h:outputScript name="bootstrap/js/bootstrap.js" />
+	</f:facet>
+
+	<f:facet name="last">
+		<h:outputStylesheet name="css/font-awesome.css" />
+	</f:facet>
+
+</h:head>
+
+<h:body>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-6 col-md-4 col-md-offset-4">
+				<h1 class="text-center login-title">Please Sign in</h1>
+				<div class="account-wall">
+					<p:graphicImage styleClass="profile-img"
+						value="resources/images/login.png" alt="" />
+					<h:form styleClass="form-signin" id="form">
+						<p:inputText type="text" styleClass="form-control"
+							value="#{userLoginController.email}" placeholder="Email"
+							required="true" requiredMessage="Email is Required!"
+							autofocus="true" />
+						<p:inputText type="password" styleClass="form-control"
+							value="#{userLoginController.password}" placeholder="Password"
+							required="true" requiredMessage="Password is Required!" />
+						<p:commandButton styleClass="btn btn-lg btn-primary btn-block"
+							value="Sign in" action="#{userLoginController.login}"
+							update="form" />
+						<p:ajaxStatus onstart="PF('statusDialog').show()"
+							onsuccess="PF('statusDialog').hide()" />
+
+						<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+							closable="false" resizable="false" showHeader="false">
+							<p:graphicImage value="/resources/images/ajax-loader.gif" />
+						</p:dialog>
+						<p:messages id="tip" />
+					</h:form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+</h:body>
+</html>

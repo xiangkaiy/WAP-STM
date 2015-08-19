@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping
+PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.stm.shorttermemployee.pojo.User" table="ste_user">
+		<id name="id" column="id" type="long">
+			<generator class="sequence" >
+				<param name="sequence">ste_sequence</param>
+			</generator>
+		</id>
+		<property name="username" column="username" type="string"/>
+		<property name="pwd" column="pwd" type="string"/>
+		<property name="email" column="email" type="string"/>
+		<property name="gender" column="gender" type="string"/>
+		<property name="logintime" column="logintime" type="timestamp"/>
+		<property name="rolename" column="rolename" type="string"/>
+		<property name="birthday" column="birthday" type="date"/>
+		<property name="joinday" column="joinday" type="date"/>
+		<property name="positionlevel" column="positionlevel" type="string"/>
+		<property name="idno" column="idno" type="string" />
+		<property name="departmentid" column="departmentid" type="long" />
+	</class>
+</hibernate-mapping>

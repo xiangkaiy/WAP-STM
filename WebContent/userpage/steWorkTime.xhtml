@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/steMain.xhtml">
+		<ui:define name="content">
+			<h:form id="signForm">
+				<p:messages id="tip" />
+				<p:panel header="Sign" toggleable="true">
+					<p:panelGrid cellpadding="5">
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Current Server Time:" for="servertime" />
+							</p:column>
+							<p:column>
+								<p:clock id="servertime" pattern="HH:mm:ss dd.MM.yyyy"
+									mode="client" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel>Work Start Time</p:outputLabel>
+							</p:column>
+							<p:column>
+								<p:outputLabel value="#{steWorkTimeController.startTime}" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel>Work End Time</p:outputLabel>
+							</p:column>
+							<p:column>
+								<p:outputLabel value="#{steWorkTimeController.endTime}" />
+							</p:column>
+						</p:row>
+
+						<p:row styleClass="no-border">
+							<p:column styleClass="no-border">
+								<p:commandButton value="Sign In" ajax="true" update=":signForm"
+									actionListener="#{steWorkTimeController.signIn}" />
+							</p:column>
+							<p:column styleClass="no-border">
+								<p:commandButton value="Sign Out" ajax="true" update=":signForm"
+									actionListener="#{steWorkTimeController.signOut}"
+									icon="ui-icon-check" />
+							</p:column>
+						</p:row>
+
+						<p:ajaxStatus onstart="PF('statusDialog').show()"
+							onsuccess="PF('statusDialog').hide()" />
+
+						<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+							closable="false" resizable="false" showHeader="false">
+							<p:graphicImage value="/resources/images/ajax-loader.gif" />
+						</p:dialog>
+
+					</p:panelGrid>
+				</p:panel>
+
+				<p:spacer height="10" />
+				<p:separator />
+				<p:panel header="Past Days' Sign" toggleable="true">
+					<h:panelGrid columnClasses="value">
+						<p:schedule id="schedule" draggable="false" resizable="false"
+							timeZone="GMT+8" value="#{steWorkTimeController.worktimeModel}">
+							<p:ajax event="eventSelect"
+								listener="#{steWorkTimeController.onOneSelect}"
+								update="eventDetails" oncomplete="PF('eventDialog').show();" />
+						</p:schedule>
+					</h:panelGrid>
+
+					<p:dialog widgetVar="eventDialog" header="Event Details"
+						showEffect="clip" hideEffect="clip">
+						<h:panelGrid id="eventDetails" columns="2">
+							<h:outputLabel value="Title:" />
+							<h:outputLabel id="title"
+								value="#{steWorkTimeController.event.title}" />
+
+							<h:outputLabel for="from" value="From:" />
+							<h:outputLabel id="from"
+								value="#{steWorkTimeController.event.startDate}">
+							</h:outputLabel>
+
+							<h:outputLabel for="to" value="To:" />
+							<p:outputLabel id="to"
+								value="#{steWorkTimeController.event.endDate}">
+							</p:outputLabel>
+
+						</h:panelGrid>
+					</p:dialog>
+				</p:panel>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

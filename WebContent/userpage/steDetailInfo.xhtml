@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/steMain.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+				<p:panel header="Detail Information">
+					<p:panelGrid cellpadding="5">
+						<f:facet name="header">
+							<p:row>
+								<p:column colspan="2">Basic Requirement</p:column>
+								<p:column colspan="1">Office Skills</p:column>
+								<p:column colspan="1">Programming Language</p:column>
+							</p:row>
+						</f:facet>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Least Work Hours Every Week"
+									for="leasthours" />
+							</p:column>
+							<p:column>
+								<p:inputText id="leasthours" placeholder="between 0~168"
+									validatorMessage="Least hours does not between 0~168"
+									value="#{steDetailController.leasthoursweek}" required="true"
+									requiredMessage="Least Work Hours is required.">
+									<f:validateLongRange minimum="0" maximum="168" />
+								</p:inputText>
+							</p:column>
+							<p:column rowspan="3">
+								<p:selectManyCheckbox id="grid"
+									value="#{steDetailController.selectedOfficeSkill}"
+									layout="grid" columns="3">
+									<f:selectItems value="#{steDetailController.officeSkillList}"
+										var="skill" itemLabel="#{skill}" itemValue="#{skill}" />
+								</p:selectManyCheckbox>
+							</p:column>
+							<p:column rowspan="3">
+								<p:selectManyCheckbox id="grid2"
+									value="#{steDetailController.selectedProLanguage}"
+									layout="grid" columns="3">
+									<f:selectItems value="#{steDetailController.proLanguageList}"
+										var="skill" itemLabel="#{skill}" itemValue="#{skill}" />
+								</p:selectManyCheckbox>
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Expected Joindate" for="joindate" />
+							</p:column>
+
+							<p:column>
+								<p:calendar id="joindate" required="true"
+									requiredMessage="Joindate is required."
+									value="#{steDetailController.joindate}" pattern="yyyy-MM-dd"
+									mask="true" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Expected Salary($/hour)"
+									for="expectedsalary" />
+							</p:column>
+							<p:column>
+								<p:inputText id="expectedsalary" placeholder="between 0~1000"
+									validatorMessage="Expected salary does not between 0~1000"
+									value="#{steDetailController.curSTE.expectedsalary}"
+									required="true" requiredMessage="Expected Salary is required.">
+									<f:validateLongRange minimum="0" maximum="1000" />
+								</p:inputText>
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+					<p:commandButton value="Submit" ajax="true" update=":form"
+						actionListener="#{steDetailController.submitDetailInfo}" />
+				</p:panel>
+				<p:ajaxStatus onstart="PF('statusDialog').show()"
+					onsuccess="PF('statusDialog').hide()" />
+
+				<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+					closable="false" resizable="false" showHeader="false">
+					<p:graphicImage value="/resources/images/ajax-loader.gif" />
+				</p:dialog>
+
+				<p:messages id="tip" />
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

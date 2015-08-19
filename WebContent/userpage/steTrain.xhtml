@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+	<ui:composition template="/template/steMain.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+				<p:panel header="Available Trains">
+					<p:dataTable id="availableTrains" var="train"
+						value="#{steTrainController.allTrains}"
+						selection="#{steTrainController.selectedTrains}"
+						rowKey="#{train.id}">
+
+
+						<p:column selectionMode="multiple" styleClass="column-text"
+							style="width:36px;text-align:center" />
+
+						<p:column headerText="Name" styleClass="column-text">
+							<h:outputText value="#{train.name}" />
+						</p:column>
+
+						<p:column headerText="Start Time" styleClass="column-text">
+							<h:outputText value="#{train.starttime}" />
+						</p:column>
+
+						<p:column headerText="End Time" styleClass="column-text">
+							<h:outputText value="#{train.endtime}" />
+						</p:column>
+
+						<f:facet name="footer">
+							<p:commandButton icon="ui-icon-search"
+								value="Submit Selected Trains" update=":form"
+								actionListener="#{steTrainController.submitSelectedTrains}"
+								ajax="true" />
+						</f:facet>
+					</p:dataTable>
+				</p:panel>
+				<p:spacer height="10" />
+				<p:separator />
+
+				<p:panel header="Selected Trains">
+					<p:dataTable id="selectedTrainsTable" var="c"
+						selection="#{steTrainController.deletedTrains}"
+						value="#{steTrainController.choosedTrains}" rowKey="#{c.id}"
+						rendered="#{not empty steTrainController.choosedTrains}">
+						<p:column selectionMode="multiple" styleClass="column-text"
+							style="width:36px;text-align:center" />
+
+						<p:column headerText="Name" styleClass="column-text">
+							<h:outputText value="#{c.name}" />
+						</p:column>
+
+
+						<p:column headerText="Start Time" styleClass="column-text">
+							<h:outputText value="#{c.starttime}" />
+						</p:column>
+
+						<p:column headerText="End Time" styleClass="column-text">
+							<h:outputText value="#{c.endtime}" />
+						</p:column>
+
+						<f:facet name="footer">
+							<p:commandButton icon="ui-icon-search"
+								value="Drop Selected Trains" update=":form"
+								actionListener="#{steTrainController.dropTrains}" ajax="true" />
+						</f:facet>
+					</p:dataTable>
+
+					<p:ajaxStatus onstart="PF('statusDialog').show()"
+						onsuccess="PF('statusDialog').hide()" />
+
+					<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+						closable="false" resizable="false" showHeader="false">
+						<p:graphicImage value="/resources/images/ajax-loader.gif" />
+					</p:dialog>
+				</p:panel>
+
+				<p:spacer height="10" />
+				<p:separator />
+				<p:messages for="tip" />
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

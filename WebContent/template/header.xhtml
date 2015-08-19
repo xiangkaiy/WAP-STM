@@ -1,0 +1,36 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+<ui:composition>
+	<h:form>
+		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<span class="navbar-brand">STE System</span>
+				</div>
+
+				<div class="header-welcome">
+					<p:outputLabel value="#{userLoginController.welcomeMsg}" />
+				</div>
+
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li><p:commandLink id="traintip" immediate="true"
+								rendered="#{userLoginController.steRole}"
+								actionListener="#{userLoginController.jumpToTrain}" ajax="false">
+								<h:outputText
+									value="Required Train Uncompleted(#{userLoginController.trainNum})" />
+							</p:commandLink></li>
+						<li><p:commandLink id="nonAjax" immediate="true"
+								actionListener="#{userLoginController.logout}" ajax="false">
+								<h:outputText value="Log Out" />
+							</p:commandLink></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</h:form>
+</ui:composition>
+</html>

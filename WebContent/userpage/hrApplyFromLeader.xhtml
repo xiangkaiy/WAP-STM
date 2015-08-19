@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/hrMain.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+
+				<p:dataTable id="applyFromLeader"
+					value="#{HRApplyFromLeaderController.applyList}" var="item"
+					rowKey="#{apply.id}" rows="10" paginator="true"
+					paginatorAlwaysVisible="true" paginatorPosition="bottom"
+					first="#{HRApplyFromLeaderController.first}"
+					paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}">
+
+					<p:column styleClass="column-text" sortBy="#{item.leader.username}">
+						<f:facet name="header">
+							<h:outputText value="Leader Name" />
+						</f:facet>
+						<h:outputText value="#{item.leader.username}" />
+					</p:column>
+
+					<p:column styleClass="column-text" sortBy="#{item.depart.name}">
+						<f:facet name="header">
+							<h:outputText value="Department Name" />
+						</f:facet>
+						<h:outputText value="#{item.depart.name}" />
+					</p:column>
+
+
+					<p:column styleClass="column-text" sortBy="#{item.apply.steamount}">
+						<f:facet name="header">
+							<h:outputText value="STEAmount" />
+						</f:facet>
+						<h:outputText value="#{item.apply.steamount}" />
+					</p:column>
+
+
+					<p:column styleClass="column-text"
+						sortBy="#{item.apply.officeskill}">
+						<f:facet name="header">
+							<h:outputText value="OfficeSkill" />
+						</f:facet>
+						<h:outputText value="#{item.apply.officeskill}" />
+					</p:column>
+
+					<p:column styleClass="column-text"
+						sortBy="#{item.apply.programlanguage}">
+						<f:facet name="header">
+							<h:outputText value="Program Skill" />
+						</f:facet>
+						<h:outputText value="#{item.apply.programlanguage}" />
+					</p:column>
+
+					<p:column styleClass="column-text"
+						sortBy="#{item.apply.expectjoindate}">
+						<f:facet name="header">
+							<h:outputText value="Expected joindate" />
+						</f:facet>
+						<h:outputText value="#{item.apply.expectjoindate}" />
+					</p:column>
+
+					<p:column styleClass="column-text"
+						sortBy="#{item.apply.expectworkhour}">
+						<f:facet name="header">
+							<h:outputText value="Expected Work Hour" />
+						</f:facet>
+						<h:outputText value="#{item.apply.expectworkhour}" />
+					</p:column>
+
+					<p:column styleClass="column-text" sortBy="#{item.apply.status}">
+						<f:facet name="header">
+							<h:outputText value="Status" />
+						</f:facet>
+						<h:outputText
+							value="#{item.apply.status == 1? 'Unhandled':(item.apply.status==2?'Passed':'Refused')}" />
+					</p:column>
+
+					<p:column styleClass="column-text" sortBy="#{item.apply.status}">
+						<f:facet name="header">
+							<h:outputText value="Operation" />
+						</f:facet>
+						<p:commandButton rendered="#{item.apply.status ==1}"
+							update="stelist" icon="ui-icon-search"
+							oncomplete="PF('stelistDialog').show();">
+							<f:setPropertyActionListener value="#{item}"
+								target="#{HRApplyFromLeaderController.selectedApply}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+
+				<p:messages id="tip" />
+				<p:ajaxStatus onstart="PF('statusDialog').show()"
+					onsuccess="PF('statusDialog').hide()" />
+
+				<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+					closable="false" resizable="false" showHeader="false">
+					<p:graphicImage value="/resources/images/ajax-loader.gif" />
+				</p:dialog>
+
+				<p:panel>
+					<div id="leaderApplyChart"></div>
+				</p:panel>
+
+				<p:inputText type="hidden" id="allDepartment"
+					value="#{HRApplyFromLeaderController.allDepartment}" />
+				<p:inputText type="hidden" id="departApplyAmount"
+					value="#{HRApplyFromLeaderController.departApplyAmount}" />
+			</h:form>
+
+			<p:dialog id="stelist" closable="false" width="1400"
+				visible="#{HRApplyFromLeaderController.showAvailableSTE}"
+				widgetVar="stelistDialog" modal="true" showEffect="fade"
+				hideEffect="fade" draggable="true" resizable="false">
+				<h:form id="stelistform">
+					<p:dataTable id="availableSTEtable" var="ste"
+						selection="#{HRApplyFromLeaderController.selectedSTE}"
+						value="#{HRApplyFromLeaderController.availableSTE}"
+						rowKey="#{ste.id}">
+						<f:facet name="header">
+							<p:outputLabel
+								value="You need to choose #{HRApplyFromLeaderController.selectedApply.apply.steamount} empoyees for this apply!" />
+						</f:facet>
+						<p:column selectionMode="multiple" styleClass="narrow-column" />
+						<p:column headerText="Name" styleClass="narrow-column"
+							sortBy="#{ste.name}">
+							<h:outputText value="#{ste.name}" />
+						</p:column>
+						<p:column headerText="Work hours per week(>=h)"
+							styleClass="column-text" sortBy="#{ste.leasthoursweek}">
+							<h:outputText value="#{ste.leasthoursweek}" />
+						</p:column>
+						<p:column headerText="Joindate(>=)" styleClass="column-text"
+							sortBy="#{ste.joindate}">
+							<h:outputText value="#{ste.joindate}" />
+						</p:column>
+						<p:column headerText="Salary(>= $/hour)" styleClass="column-text"
+							sortBy="#{ste.expectedsalary}">
+							<h:outputText value="#{ste.expectedsalary}" />
+						</p:column>
+
+						<p:column headerText="Officeskill" styleClass="column-text"
+							sortBy="#{ste.officeskill}">
+							<h:outputText value="#{ste.officeskill}" />
+						</p:column>
+						<p:column headerText="Programlanguage" styleClass="column-text"
+							sortBy="#{ste.programlanguage}">
+							<h:outputText value="#{ste.programlanguage}" />
+						</p:column>
+					</p:dataTable>
+
+					<p:commandButton id="assignste" icon="ui-icon-tag" ajax="true"
+						update=":stelist :form " type="submit" value="Submit"
+						actionListener="#{HRApplyFromLeaderController.assignSTE}" />
+
+					<p:commandButton id="discard" icon="ui-icon-tag" value="Discard"
+						ajax="true" update="form" immediate="true"
+						onclick="PF('stelistDialog').hide();test()"
+						actionListener="#{HRApplyFromLeaderController.discard}" />
+					<p:messages id="tip" />
+
+				</h:form>
+			</p:dialog>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

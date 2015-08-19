@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/hrMain.xhtml">
+		<ui:define name="content">
+			<h:form id="wortimeForm">
+
+					<p:dataTable id="workTimeTable" widgetVar="workTimeTableVar"
+						emptyMessage="No worktime record found with given criteria"
+						value="#{hrWorkTimeManageController.worktimeList}" var="item"
+						selectionMode="single" rowKey="#{item.worktime.id}"
+						selection="#{hrWorkTimeManageController.selectedWorktime}"
+						rows="10" paginator="true" paginatorAlwaysVisible="true"
+						paginatorPosition="bottom"
+						filteredValue="#{hrWorkTimeManageController.filteredWorktime}"
+						first="#{hrWorkTimeManageController.first}"
+						paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}">
+						<p:ajax event="sort" global="false" />
+						<p:ajax event="filter" global="false" />
+
+
+						<p:column filterBy="#{item.user.username}"
+							filterMatchMode="contains" sortBy="#{item.user.username}">
+							<f:facet name="header">
+								<h:outputText value="Name" />
+							</f:facet>
+							<h:outputText value="#{item.user.username}" />
+						</p:column>
+
+						<p:column filterBy="#{item.user.email}" filterMatchMode="contains"
+							sortBy="#{item.user.email}">
+							<f:facet name="header">
+								<h:outputText value="Email" />
+							</f:facet>
+							<h:outputText value="#{item.user.email}" />
+						</p:column>
+
+						<p:column sortBy="#{item.worktime.signtime}">
+							<f:facet name="header">
+								<h:outputText value="SignDay" />
+							</f:facet>
+
+							<h:outputText value="#{item.worktime.signtime}" />
+						</p:column>
+
+						<p:column sortBy="#{item.worktime.starttime}">
+							<f:facet name="header">
+								<h:outputText value="StartTime" />
+							</f:facet>
+							<h:outputText value="#{item.worktime.starttime}" />
+						</p:column>
+
+
+						<p:column sortBy="#{item.worktime.endtime}">
+							<f:facet name="header">
+								<h:outputText value="EndTime" />
+							</f:facet>
+							<h:outputText value="#{item.worktime.endtime}" />
+						</p:column>
+
+						<p:column sortBy="#{item.worktime.totaltime}">
+							<f:facet name="header">
+								<h:outputText value="Total WorkTime" />
+							</f:facet>
+							<h:outputText value="#{item.worktime.totaltime}" />
+						</p:column>
+					</p:dataTable>
+
+					<p:ajaxStatus onstart="PF('statusDialog').show()"
+						onsuccess="PF('statusDialog').hide()" />
+
+					<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+						closable="false" resizable="false" showHeader="false">
+						<p:graphicImage value="/resources/images/ajax-loader.gif" />
+					</p:dialog>
+
+
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

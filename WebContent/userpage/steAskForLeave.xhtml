@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/template/steMain.xhtml">
+		<ui:define name="content">
+			<h:form id="leaveForm">
+				<p:panel header="Ask for leave:" toggleable="true">
+					<p:panelGrid cellpadding="5">
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Start Time:" for="starttime" />
+							</p:column>
+							<p:column>
+								<p:calendar id="starttime" required="true"
+									requiredMessage="Starttime is required."
+									value="#{steAskForLeaveController.starttime}"
+									pattern="MM/dd/yyyy HH:mm:ss" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel value="End Time:" for="endtime" />
+							</p:column>
+							<p:column>
+								<p:calendar id="endtime" required="true"
+									requiredMessage="Endtime is required."
+									value="#{steAskForLeaveController.endtime}"
+									pattern="MM/dd/yyyy HH:mm:ss" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Reason:" for="reason" />
+							</p:column>
+							<p:column>
+								<p:inputText id="reason"
+									value="#{steAskForLeaveController.leaveApply.reason}"
+									required="true" requiredMessage="Reason is required.">
+
+								</p:inputText>
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column colspan="2">
+								<p:commandButton value="Submit" icon="ui-icon-check"
+									id="submitbtn1" update=":leaveForm"
+									actionListener="#{steAskForLeaveController.submitLeaveApply}"
+									ajax="true" />
+							</p:column>
+						</p:row>
+
+						<p:ajaxStatus onstart="PF('statusDialog').show()"
+							onsuccess="PF('statusDialog').hide()" />
+
+						<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+							closable="false" resizable="false" showHeader="false">
+							<p:graphicImage value="/resources/images/ajax-loader.gif" />
+						</p:dialog>
+					</p:panelGrid>
+					<p:messages id="tip" />
+				</p:panel>
+
+				<p:spacer height="10" />
+				<p:separator />
+
+				<p:panel header="Applys" toggleable="true">
+					<p:dataTable id="handledTable" var="leave"
+						value="#{steAskForLeaveController.applyList}" rowKey="#{leave.id}">
+
+						<p:column headerText="Starttime" styleClass="column-text">
+							<h:outputText value="#{leave.starttime}" />
+						</p:column>
+
+						<p:column headerText="Endtime" styleClass="column-text">
+							<h:outputText value="#{leave.endtime}" />
+						</p:column>
+
+						<p:column headerText="Reason" styleClass="column-text">
+							<h:outputText value="#{leave.reason}" />
+						</p:column>
+
+						<p:column headerText="ApplyTime" styleClass="column-text">
+							<h:outputText value="#{leave.applytime}" />
+						</p:column>
+
+						<p:column headerText="Comment" styleClass="column-text">
+							<h:outputText value="#{leave.leadercomment}" />
+						</p:column>
+
+						<p:column headerText="Status" styleClass="column-text">
+							<h:outputText value="#{leave.status}" />
+						</p:column>
+
+					</p:dataTable>
+
+				</p:panel>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>
